@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {prefixScenario,radixStage,vllmStage} from '../src/cacheScenarios.ts';
-import {familyForChapter,navigationChapters} from '../src/content.ts';
+import {parseRoute,topics} from '../src/curriculum.ts';
 test('prefix identity includes causal ancestry and first-block salt',()=>{
  for(const kind of ['suffix','salt']){
   const x=prefixScenario(kind);assert.equal(x.hitTokens,0);
@@ -43,8 +43,7 @@ test('block lifecycle separates active ownership, free queue, and cached identit
  const reused=vllmStage(5).blocks.find(b=>b.id===9);assert.equal(reused.hash,null);assert.equal(reused.ref,1);
  assert.equal(vllmStage(5).blocks.find(b=>b.id===7).hash,'H1');
 });
-test('framework-specific cache pages share a navigation family without altering model families',()=>{
- assert.equal(familyForChapter('cache-vllm').id,'cache');assert.equal(familyForChapter('sparse').id,'deepseek');
- assert.equal(navigationChapters.filter(c=>c.group==='模型深潜').length,2);
- assert.deepEqual(familyForChapter('cache').sections.map(s=>s.id),['cache','cache-vllm']);
+test('legacy cache routes keep their framework and model hierarchy stays distinct',()=>{
+ assert.equal(parseRoute('#/cache').engine,'sglang');assert.equal(parseRoute('#/cache-vllm').engine,'vllm');
+ assert.equal(topics.filter(t=>t.group==='模型实现'&&!t.parent).length,2);
 });

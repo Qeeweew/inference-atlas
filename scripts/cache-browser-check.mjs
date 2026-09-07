@@ -10,7 +10,7 @@ async function noOverflow(){
  assert.deepEqual(overflow,[],'Diagram overflow hidden inside lab');
 }
 await page.goto(`${base}/#/cache`);
-await page.getByRole('heading',{name:'KV cache：SGLang 的 Radix Tree',exact:true}).waitFor();
+await page.getByRole('heading',{name:'KV cache 与前缀复用',exact:true,level:1}).waitFor();
 await page.getByRole('button',{name:'02 B 查找 / 分裂'}).click();
 await page.getByRole('button',{name:'查看树节点 P',exact:true}).click();
 assert.equal(await page.locator('.radix-node:not(.ghost)').count(),3);
@@ -24,7 +24,7 @@ assert.equal(await page.getByRole('button',{name:'查看树节点 A',exact:true}
 await page.locator('.source-link').filter({hasText:'TreeNode'}).first().click();
 await page.locator('.code-row.highlight').first().waitFor();assert.match(await page.locator('.code-row.highlight').first().innerText(),/class TreeNode/);
 await noOverflow();await page.getByRole('button',{name:'关闭源码',exact:true}).click();
-await page.getByRole('navigation',{name:'KV cache 内容'}).getByRole('button',{name:'vLLM · 块哈希链',exact:true}).click();
+await page.getByRole('navigation',{name:'切换框架'}).getByRole('button',{name:/vLLM/}).click();
 await page.getByRole('button',{name:'03 引用 / 分配'}).click();assert.equal(await page.locator('.free-queue button').count(),1);
 await page.getByRole('button',{name:'05 B 释放引用'}).click();assert.equal(await page.locator('.free-queue button').count(),4);
 await page.getByRole('button',{name:'查看物理块 2',exact:true}).click();

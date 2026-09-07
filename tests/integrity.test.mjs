@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import crypto from 'node:crypto';
-import {chapters} from '../src/content.ts';
+import {topics} from '../src/curriculum.ts';
 import {scheduleDemo,cacheDemo,k3Memory,sparseDemo,speculativeEstimate} from '../src/simulations.mjs';
 const index=JSON.parse(fs.readFileSync(new URL('../src/source-index.json',import.meta.url)));
 const files=index.files;
@@ -45,9 +45,9 @@ test('source indexes are portable and synchronized',()=>{
  assert.deepEqual(index,publicIndex);
  for(const file of Object.values(files))assert.equal(path.isAbsolute(file.localPath),false,file.id);
 });
-test('all chapters and cross references form a complete reading route',()=>{
- const ids=chapters.map(c=>c.id);assert.equal(new Set(ids).size,ids.length);
- for(const c of chapters){assert.ok(c.sections.length>=2);for(const id of c.related)assert.ok(ids.includes(id));}
+test('all topics form a valid hierarchy',()=>{
+ const ids=topics.map(t=>t.id);assert.equal(new Set(ids).size,ids.length);
+ for(const t of topics)if(t.parent)assert.ok(ids.includes(t.parent));
 });
 test('scheduler conserves work, respects arrivals and all token budgets',()=>{
  for(const budget of [4,8,16,32])for(const chunk of [4,8,16,32])for(const decodeFirst of [true,false]){

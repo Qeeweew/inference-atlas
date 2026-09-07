@@ -13,15 +13,22 @@
 
 ## 内容和交互
 
-22 个专题，包含入口/IPC、调度与 overlap、分页/前缀/混合缓存、runner/metadata/CUDA Graph、attention、MoE、TP/PP/DP/EP/CP、PD 与分层存储、投机、K3 的 KDA/NoPE-MLA/AttnRes/LatentMoE、V4 的 SWA/C4/C128/indexer/mHC、量化硬件、多模态/采样/工具、运维和扩展验证。
+SGLang 与 vLLM 分成两条独立阅读路线，每条 21 个专题，共 42 个框架专题页。全站切换框架时保留当前专题；正文、图、源码搜索和阅读进度分别组织。
 
-- 模型深潜目录只保留 Kimi K3 / DeepSeek V4，模型内部切换架构、KDA/AttnRes 或稀疏注意力；旧的专题链接和源码定位仍有效。
-- 架构关系图：缩放、拖动画布、点击节点；窄屏自动使用可读的分层视图。
-- 实验：请求逐步推进、调度预算、公共前缀与分页、K3 内存、V4 因果压缩边界、并行轴、投机成本、故障诊断。
-- 源码：126 个完整文件、5,113 个 AST 定位符号；行号高亮、函数选择、文件内查找、双击标识符查找定义、复制仓库内位置、固定提交 GitHub 链接。
-- 全站搜索：Ctrl/Cmd-K；支持概念、文件与符号。
-- 主题、阅读进度、收藏保存在浏览器本机；无账号、无跟踪。
-- URL 支持专题和代码定位，例如 `#/kimi?code=sg.k3%23KimiK3DecoderLayer`。
+四层目录：
+
+1. **引擎主线**：架构、请求生命周期、调度、执行与 CUDA Graph。
+2. **状态与计算**：KV cache、混合状态、attention、MoE。
+3. **模型实现**：只以 Kimi K3 / DeepSeek V4 为顶层，KDA、AttnRes、稀疏压缩作为模型内分节。
+4. **运行与工程**：并行、PD、投机、量化、服务协议、诊断、测试、源码。
+
+每页按「核心问题 → 结构总览 → 执行过程 → 对象与接口 → 设计取舍 → 互动实验」展开，长细节按问题折叠。结构图可选择节点，输入/输出契约与真实字段各自呈现，全部提供对应框架的源码跳转。
+
+- KV cache 保留 Radix Tree / 块哈希链、字段检查器、生命周期、前缀命中实验。
+- 源码全文、函数跳转、文件搜索、固定提交 GitHub 链接继续可用；搜索和文件选择限定在当前框架与官方配置。
+- 主题、阅读进度和收藏仅在浏览器本机保存，两框架分别记录。
+- 新路由：`#/sglang/scheduler?view=objects`、`#/vllm/scheduler?view=design`。
+- 原有 `#/cache`、`#/cache-vllm`、`#/kimi` 等链接兼容；`code` 参数保持源码定位。
 
 ## 证据基线
 
@@ -40,7 +47,7 @@
 
 ## 技术选择
 
-检索并阅读官方文档后选择 React + Vite + React Flow，使用 Prism 语法高亮与 Lucide 图标。与 Docusaurus 的文档发布工作流相比，本任务更需要图、状态实验和源码阅读器联动，因此使用定制 React 页面。参考：
+检索并阅读官方文档后选择 React + Vite，使用 Prism 语法高亮与 Lucide 图标。与 Docusaurus 的文档发布工作流相比，本任务更需要图、状态实验和源码阅读器联动，因此使用定制 React 页面。当前分层结构图用原生可交互节点呈现。参考：
 
 - https://vite.dev/guide/
 - https://reactflow.dev/
@@ -64,7 +71,7 @@ node scripts/browser-check.mjs
 
 源码刷新：在当前目录运行 `npm run sources`，从相邻 `sglang/`、`vllm/` 重建按文件快照和 AST 行号。更新后必须人工复核分析结论，不能只刷新行号。配置数据和两套 src/public 索引由脚本维护；模型配置变动时重新同步 src 下的配置副本并核对层图与公式。
 
-分析正文在 `src/content.ts`；交互的纯计算逻辑在 `src/simulations.mjs`；浏览器验证与源码完整性测试分别在 scripts/ 与 tests/。上游仓库未被修改。
+目录与路由在 `src/curriculum.ts`，两框架正文分别在 `src/sglangGuide.ts` / `src/vllmGuide.ts`，字段表在 `src/objectContracts.ts`，分层阅读界面在 `src/StudyPage.tsx`。交互计算在 `src/simulations.mjs` 和 `src/cacheScenarios.ts`；浏览器与源码完整性检查在 scripts/ 与 tests/。上游仓库未被修改。
 
 KV cache 分为 SGLang Radix Tree 与 vLLM V1 块哈希两页，含节点/块字段检查器、六步生命周期、前缀/盐/缺块实验。图内编号为教学示意；细粒度前缀与 K3/V4 混合状态边界在正文单独说明。
 
